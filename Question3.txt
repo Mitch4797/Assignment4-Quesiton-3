@@ -1,0 +1,136 @@
+
+CREATE TABLE public.Address (
+                AddressID INTEGER NOT NULL,
+                Number INTEGER NOT NULL,
+                City VARCHAR NOT NULL,
+                State VARCHAR NOT NULL,
+                ZipCode INTEGER NOT NULL,
+                PhoneNumber VARCHAR NOT NULL,
+                CONSTRAINT addressid PRIMARY KEY (AddressID)
+);
+
+
+CREATE TABLE public.Muscian (
+                SSN VARCHAR NOT NULL,
+                Name VARCHAR NOT NULL,
+                AddressID INTEGER NOT NULL,
+                CONSTRAINT ssn PRIMARY KEY (SSN)
+);
+
+
+CREATE TABLE public.Album (
+                AlbumID INTEGER NOT NULL,
+                Producer VARCHAR NOT NULL,
+                Title VARCHAR NOT NULL,
+                Format VARCHAR NOT NULL,
+                ReleaseDate TIMESTAMP NOT NULL,
+                CONSTRAINT albumid PRIMARY KEY (AlbumID)
+);
+
+
+CREATE TABLE public.Song (
+                Title VARCHAR NOT NULL,
+                Length REAL NOT NULL,
+                AlbumID INTEGER NOT NULL,
+                Author VARCHAR NOT NULL,
+                CONSTRAINT title PRIMARY KEY (Title)
+);
+
+
+CREATE TABLE public.Performs (
+                Title VARCHAR NOT NULL,
+                SSN VARCHAR NOT NULL,
+                CONSTRAINT sings PRIMARY KEY (Title, SSN)
+);
+
+
+CREATE TABLE public.Insturment (
+                Name VARCHAR NOT NULL,
+                Pitch VARCHAR NOT NULL,
+                CONSTRAINT name PRIMARY KEY (Name)
+);
+
+
+CREATE TABLE public.UsedIn (
+                Name VARCHAR NOT NULL,
+                Title VARCHAR NOT NULL,
+                CONSTRAINT used PRIMARY KEY (Name, Title)
+);
+
+
+CREATE TABLE public.Plays (
+                SSN VARCHAR NOT NULL,
+                Name VARCHAR NOT NULL,
+                CONSTRAINT playedby PRIMARY KEY (SSN, Name)
+);
+
+
+ALTER TABLE public.Muscian ADD CONSTRAINT address_muscian_fk
+FOREIGN KEY (AddressID)
+REFERENCES public.Address (AddressID)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Plays ADD CONSTRAINT muscian_plays_fk
+FOREIGN KEY (SSN)
+REFERENCES public.Muscian (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Performs ADD CONSTRAINT muscian_performs_fk
+FOREIGN KEY (SSN)
+REFERENCES public.Muscian (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Album ADD CONSTRAINT album_musician_fk
+FOREIGN KEY (Producer)
+REFERENCES public.Muscian (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Song ADD CONSTRAINT muscian_song_fk
+FOREIGN KEY (Author)
+REFERENCES public.Muscian (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Song ADD CONSTRAINT album_song_fk
+FOREIGN KEY (AlbumID)
+REFERENCES public.Album (AlbumID)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.UsedIn ADD CONSTRAINT song_usedin_fk
+FOREIGN KEY (Title)
+REFERENCES public.Song (Title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Performs ADD CONSTRAINT song_performs_fk
+FOREIGN KEY (Title)
+REFERENCES public.Song (Title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Plays ADD CONSTRAINT insturment_plays_fk
+FOREIGN KEY (Name)
+REFERENCES public.Insturment (Name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.UsedIn ADD CONSTRAINT insturment_usedin_fk
+FOREIGN KEY (Name)
+REFERENCES public.Insturment (Name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
